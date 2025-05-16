@@ -15,6 +15,9 @@ on:
       OPENTELEMETRYBOT_GITHUB_TOKEN:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   resolve-automation:
 
@@ -28,6 +31,11 @@ jobs:
       OPENTELEMETRYBOT_GITHUB_TOKEN_EXISTS: ${{ secrets.OPENTELEMETRYBOT_GITHUB_TOKEN != '' }}
 
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+      with:
+        egress-policy: audit
+
     - id: evaluate
       run: |
         echo "enabled=${{ env.OPENTELEMETRYBOT_GITHUB_TOKEN_EXISTS == 'true' }}" >> "$GITHUB_OUTPUT"
